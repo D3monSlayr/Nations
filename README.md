@@ -7,8 +7,8 @@ It's because error messages have to be correctly indicated especially
 with a large codebase like that.
 
 ## What are your plans for this plugin?
-This will be the **Lite** version of the plugin with the basic stuff but
-soon, there will be a **Pro** version, featuring new GUIs, commands, and
+This will be the ### Lite version of the plugin with the basic stuff but
+soon, there will be a ### Pro version, featuring new GUIs, commands, and
 overall improvement in code. There will be two branches dedicated to both
 versions later.
 
