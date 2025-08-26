@@ -1,0 +1,5 @@
+me\ferzic\nations\commands\NationsCommand.class
+me\ferzic\nations\managers\NationManager.class
+me\ferzic\nations\Plugin.class
+me\ferzic\nations\classes\Nation.class
+me\ferzic\nations\managers\NationManager$1.class

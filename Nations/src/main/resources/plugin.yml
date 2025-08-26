@@ -1,0 +1,18 @@
+name: Nations
+version: '1.0'
+main: me.ferzic.nations.Plugin
+api-version: '1.21'
+authors: [ Ferzic ]
+description: Made by Ferzic.
+
+commands:
+  nations:
+    description: In beta testing
+    usage: /nations <arguments>
+    aliases: [n]
+    permission: nations.use
+
+permissions:
+  nations.use:
+    description: Allows players to use the general commands.
+    default: op
