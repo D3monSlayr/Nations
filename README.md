@@ -2,9 +2,6 @@
 This is the repository for the Nations Plugin.
 
 # FAQ
-## You might be wondering why I haven't published a release yet?
-It's because error messages have to be correctly indicated especially
-with a large codebase like that.
 
 ## What are your plans for this plugin?
 This will be the **Lite** version of the plugin with the basic stuff but
