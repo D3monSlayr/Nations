@@ -23,8 +23,16 @@ public final class Plugin extends JavaPlugin {
         Objects.requireNonNull(getCommand("nations")).setExecutor(new NationsCommand());
 
         // Generate config.yml
+        saveDefaultConfig();
         getConfig().options().copyDefaults(true);
         saveConfig();
+
+        // Get if the owner hasn't enabled the plugin
+        if (!getConfig().getBoolean("enabled", true)) { // default true
+            getLogger().warning("Nations has been disabled because 'enabled' = false.");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
 
         // Handle and save the Nation Registries.
         Nation.generateEmptyConfig();

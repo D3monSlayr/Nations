@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -23,6 +24,7 @@ public class Nation {
     public Nation(UUID owner, String name) {
         this.owner = owner;
         this.name = name;
+        this.members = new ArrayList<>();
     }
 
     // Memory
@@ -48,9 +50,16 @@ public class Nation {
         }
     }
 
-    // Helper methods
     public static void reloadConfig() {
-        config = YamlConfiguration.loadConfiguration(file);
+        Plugin plugin = Plugin.getInstance();
+
+        // --- Save current states first ---
+        plugin.saveConfig();   // saves config.yml
+        saveConfiguration();   // saves registry.yml
+
+        // --- Reload from disk ---
+        plugin.reloadConfig(); // reloads config.yml
+        config = YamlConfiguration.loadConfiguration(file); // reloads registry.yml
     }
 
     public static FileConfiguration getConfigurtion() {
@@ -113,6 +122,18 @@ public class Nation {
 
     public static void addPlayerTo(Nation nation, UUID player) {
         nation.members.add(player);
+
+        ConfigurationSection section = getConfigurtion().getConfigurationSection(nation.name);
+
+        if (section == null) {
+            Plugin.getInstance().getLogger().severe("Could not find nation section for '" + nation.name + "'. [ERR102]");
+            return;
+        }
+        List<String> members = section.getStringList("members");
+        members.add(player.toString());
+
+        section.set("members", members);
+        saveConfiguration();
     }
 
 }

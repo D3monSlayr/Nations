@@ -7,12 +7,63 @@ description: Made by Ferzic.
 
 commands:
   nations:
-    description: In beta testing
+    description: The main command of the nations plugin.
     usage: /nations <arguments>
     aliases: [n]
     permission: nations.use
 
 permissions:
   nations.use:
-    description: Allows players to use the general commands.
+    description: Allows players to use all nations commands.
+    default: true
+    children:
+      nations.create: true
+      nations.disband: true
+      nations.invite: true
+      nations.accept: true
+      nations.deny: true
+      nations.leave: true
+      nations.help: true
+
+  nations.admin:
+    description: Allows players to use all nations commands.
     default: op
+    children:
+      nations.manage: true
+      nations.reload: true
+
+  nations.create:
+    description: Allows players to create nations.
+    default: true
+
+  nations.disband:
+    description: Allows players to disband their nation.
+    default: op
+
+  nations.invite:
+    description: Allows players to invite others to their nation.
+    default: true
+
+  nations.accept:
+    description: Allows players to accept nation invites.
+    default: true
+
+  nations.deny:
+    description: Allows players to deny nation invites.
+    default: true
+
+  nations.leave:
+    description: Allows players to leave their nation.
+    default: true
+
+  nations.reload:
+    description: Allows reloading of the Nations configuration.
+    default: op
+
+  nations.manage:
+    description: Allows you to manage all nations in the server.
+    default: op
+
+  nations.help:
+    description: Allows reloading of the Nations configuration.
+    default: true

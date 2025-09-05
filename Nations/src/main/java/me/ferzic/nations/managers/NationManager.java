@@ -13,8 +13,8 @@ public class NationManager {
 
     // TODO: Fix all messages.
 
-    List<String> registeredNations;
-    List<String> pendingInvites;
+    public List<String> registeredNations;
+    public List<String> pendingInvites;
 
     public NationManager() {
         this.registeredNations = new ArrayList<>();
@@ -66,11 +66,10 @@ public class NationManager {
         Nation.saveConfiguration();
 
         // Add nation to registered nations.
-        registeredNations.add(getConfigurtion().getString(name));
+        registeredNations.add(name);
     }
 
     public void leaveNation(UUID player) {
-
         for(String nationName : getConfigurtion().getKeys(false)) {
             ConfigurationSection section = getConfigurtion().getConfigurationSection(nationName);
 
@@ -80,101 +79,133 @@ public class NationManager {
 
             if(members.contains(player.toString())) {
                 members.remove(player.toString());
-                sendMsgToPlr(Bukkit.getPlayer(player), "§aYou have left '" + nationName + "'");
+                sendMsgToPlr(Bukkit.getPlayer(player), "§aYou have left the nation §e" + nationName + "§a.");
                 Nation.saveConfiguration();
+                return; // stop here so "not in a nation" isn’t also sent
             }
         }
 
-        sendMsgToPlr(Bukkit.getPlayer(player), "§cYou are not in any nation!");
+        sendMsgToPlr(Bukkit.getPlayer(player), "§cYou are not a member of any nation.");
     }
+
 
     public void invitePlayer(UUID owner, UUID inviting) {
         Player invited = Bukkit.getPlayer(inviting);
 
         if(invited == null) {
-            sendMsgToPlr(Bukkit.getPlayer(owner), "§cThat player is offline!");
+            sendMsgToPlr(Bukkit.getPlayer(owner), "§cThat player is not online.");
             return;
         }
 
         if(pendingInvites.contains(getNationOfPlayer(owner) + "-" + inviting)) {
-            sendMsgToPlr(Bukkit.getPlayer(owner), "§cThat player has already been invited!");
+            sendMsgToPlr(Bukkit.getPlayer(owner), "§cThat player already has a pending invite to your nation.");
             return;
         }
 
         pendingInvites.add(getNationOfPlayer(owner) + "-" + inviting);
 
-        sendMsgToPlr(invited, "§aYou have been invited to join '" + getNationOfPlayer(owner) + "'");
+        sendMsgToPlr(invited, "§aYou have been invited to join §e" + getNationOfPlayer(owner) + "§a. Use §e/nations accept " + getNationOfPlayer(owner) + "§a to join or §e/nations deny " + getNationOfPlayer(owner) + "§a to refuse. You have 5 minutes.");
+        sendMsgToPlr(Bukkit.getPlayer(owner), "§aInvite sent to §e" + invited.getName() + "§a.");
 
         Timer timer = new Timer();
         TimerTask countdown = new TimerTask() {
             @Override
             public void run() {
-                pendingInvites.remove(getNationOfPlayer(owner) + "-" + inviting);
-                sendMsgToPlr(invited, "§cYour invite to " + getNationOfPlayer(owner) + "' has expired!");
-                sendMsgToPlr(Bukkit.getPlayer(owner), "§cYour invite to " + invited.getName() + "' has expired!");
+                if(pendingInvites.contains(getNationOfPlayer(owner) + "-" + inviting)) {
+                    pendingInvites.remove(getNationOfPlayer(owner) + "-" + inviting);
+                    sendMsgToPlr(invited, "§cYour invite to join §e" + getNationOfPlayer(owner) + "§c has expired.");
+                    sendMsgToPlr(Bukkit.getPlayer(owner), "§cThe invite sent to §e" + invited.getName() + "§c has expired.");
+                } else {
+                    timer.cancel();
+                }
             }
         };
 
-        timer.schedule(countdown, 10000);
-
+        timer.schedule(countdown, 300000);
         Nation.saveConfiguration();
-
     }
 
-    public void acceptInvite(UUID invited) {
+
+    public void acceptInvite(Nation nation, UUID invited) {
         for(String invite : pendingInvites) {
             String[] parts = invite.split("-", 2);
 
             String nationName = parts[0];
             UUID inviting = UUID.fromString(parts[1]);
 
-            if(nationName == null) {
-                return;
-            }
+            if(nationName == null) return;
 
-            if(Objects.equals(getNationOfPlayer(invited), invited.toString()) && invited == inviting) {
-                Nation nation = getNationByName(nationName);
-
+            if(invited.equals(inviting)) {
                 if(nation != null) {
-                    addPlayerTo(nation, inviting);
-                    pendingInvites.remove(nation + "-" + inviting);
-                    sendMsgToPlr(Bukkit.getPlayer(inviting), "§aYou have been added to '" + nationName + "'");
+                    addPlayerTo(nation, invited);
+                    pendingInvites.remove(nation + "-" + invited);
+                    sendMsgToPlr(Bukkit.getPlayer(invited), "§aYou have joined the nation §e" + nationName + "§a.");
+                    sendMsgToPlr(getOwner(nationName), "§a§e" + Objects.requireNonNull(Bukkit.getPlayer(invited)).getName() + "§a has joined your nation.");
+                    Nation.saveConfiguration();
                     return;
                 }
             }
         }
 
-        sendMsgToPlr(Bukkit.getPlayer(invited), "§cYou do not have any pending invites!");
-
+        sendMsgToPlr(Bukkit.getPlayer(invited), "§cYou do not have any pending invites.");
         Nation.saveConfiguration();
-
     }
 
-    public void denyInvite(UUID denying) {
+
+    public void denyInvite(Nation nation, UUID denying) {
         for(String invite : pendingInvites) {
             String[] parts = invite.split("-", 2);
 
             String nationName = parts[0];
             UUID inviting = UUID.fromString(parts[1]);
 
-            if(nationName == null) {
-                return;
-            }
+            if(nationName == null) return;
 
-            if(Objects.equals(getNationOfPlayer(denying), denying.toString()) && denying == inviting) {
-                Nation nation = getNationByName(nationName);
-
+            if(denying.equals(inviting)) {
                 if(nation != null) {
                     pendingInvites.remove(nation + "-" + inviting);
-                    sendMsgToPlr(getOwner(nationName), "§c" + Objects.requireNonNull(Bukkit.getPlayer(denying)).getName() + " has denied your invite!");
-                    sendMsgToPlr(Bukkit.getPlayer(inviting), "§aYou have successfully denied the invite to '" + nationName + "'");
+                    sendMsgToPlr(getOwner(nationName), "§c§e" + Objects.requireNonNull(Bukkit.getPlayer(denying)).getName() + "§c has denied your nation invite.");
+                    sendMsgToPlr(Bukkit.getPlayer(denying), "§aYou denied the invite to join §e" + nationName + "§a.");
+                    Nation.saveConfiguration();
                     return;
                 }
             }
         }
 
-        sendMsgToPlr(Bukkit.getPlayer(denying), "§cYou do not have any pending invites!");
+        sendMsgToPlr(Bukkit.getPlayer(denying), "§cYou do not have any pending invites.");
+        Nation.saveConfiguration();
+    }
 
+    public void kickPlayer(Nation nation, UUID player) {
+        ConfigurationSection section = getConfigurtion().getConfigurationSection(nation.name);
+
+        if(section == null) {
+            return;
+        }
+
+        List<String> members = section.getStringList("members");
+        members.remove(player.toString());
+
+        section.set("members", members);
+        Nation.saveConfiguration();
+
+        Player target = Bukkit.getPlayer(player);
+        if(target == null) {
+            return;
+        }
+
+        target.sendMessage("§cYou have been kicked from your nation!");
+        Nation.saveConfiguration();
+    }
+
+    public void setOwner(Nation nation, UUID newOwner) {
+        ConfigurationSection section = getConfigurtion().getConfigurationSection(nation.name);
+
+        if(section == null) {
+            return;
+        }
+
+        section.set("owner", newOwner);
         Nation.saveConfiguration();
     }
 
@@ -188,10 +219,12 @@ public class NationManager {
         }
         getConfigurtion().set(nation.name, null);
 
-        // Clear runtime object
-        nation.members = null;
-        nation.name = null;
-        nation.owner = null;
+        // Clear runtime list but don’t null fields
+        if (nation.members != null) {
+            nation.members.clear();
+        }
+
+        registeredNations.remove(nation.name);
 
         Nation.saveConfiguration();
     }
