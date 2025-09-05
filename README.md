@@ -1,13 +1,27 @@
-# Nations
-This is the repository for the Nations Plugin.
+# 🌍 Nations (Lite)
 
-# FAQ
+This is the official repository for the **Nations Plugin (Lite)** – a Minecraft plugin that adds nation creation and management features to your server.  
 
-## What are your plans for this plugin?
-This will be the **Lite** version of the plugin with the basic stuff but
-soon, there will be a **Pro** version, featuring new GUIs, commands, and
-overall improvement in code. There will be two branches dedicated to both
-versions later.
+The **Lite** version provides the core nation system (create, invite, manage, disband, etc.).  
+A **Pro** version will follow with GUIs, expanded commands, and advanced gameplay mechanics.
 
-- There will be an official release when I finish with the Lite version.
-- Also a discord will be released as the plugin grows in popularity.
+---
+
+## 📦 Project Structure
+
+- `src/main/java/me/ferzic/nations/` → Core plugin classes  
+- `src/main/resources/plugin.yml` → Bukkit/Spigot plugin configuration  
+- `nations.yml` → Auto-generated config where nation data is stored  
+
+---
+
+## 🚀 Building
+
+This project uses **Maven** and **Java 17+**.
+
+Clone the repo and build:
+
+```sh
+git clone https://github.com/D3monSlayr/Nations.git
+cd Nations
+mvn clean package
