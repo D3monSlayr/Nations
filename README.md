@@ -24,4 +24,15 @@ Clone the repo and build:
 ```sh
 git clone https://github.com/D3monSlayr/Nations.git
 cd Nations
-mvn clean package
+mvn clean package 
+```
+
+## ⚖️ License
+
+This project is licensed under the **Nations Plugin License**.
+
+- ✅ You may **download and use** this plugin on your Minecraft server.  
+- ❌ You may **not modify, redistribute, re-publish, or create derivative works**.  
+- ❌ You may **not sell or re-upload** this plugin.  
+
+See the [LICENSE](./LICENSE) file for full details.
