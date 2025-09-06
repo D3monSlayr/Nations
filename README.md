@@ -36,3 +36,7 @@ This project is licensed under the **Nations Plugin License**.
 - ❌ You may **not sell or re-upload** this plugin.  
 
 See the [LICENSE](./LICENSE) file for full details.
+
+---
+
+**Discord:** [Join Here](https://discord.gg/E9NsdR7mKt)
