@@ -1,9 +1,6 @@
-# 🌍 Nations (Lite)
+# 🌍 Nations
 
-This is the official repository for the **Nations Plugin (Lite)** – a Minecraft plugin that adds nation creation and management features to your server.  
-
-The **Lite** version provides the core nation system (create, invite, manage, disband, etc.).  
-A **Pro** version will follow with GUIs, expanded commands, and advanced gameplay mechanics.
+This is the official repository for the **Nations Plugin** – a Minecraft plugin that adds nation creation and management features to your server.  
 
 ---
 
